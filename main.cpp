@@ -55,9 +55,9 @@ void penInterrupt(void)
 	
 	if(!digitalRead(irqPin) && resistance != point(0x000, 0xFFF))
 	{
+		
 		//Pen down		
 		point position = touchCalib.getDisplayPoint(resistance);
-		
 		XTestFakeMotionEvent (display, 0, position.x(), position.y(), CurrentTime );
 		XFlush(display);
 		
@@ -201,6 +201,7 @@ int main(int argc, char *argv[])
 	screen_num = DefaultScreen(display);
 	disp_w = DisplayWidth(display, screen_num);
 	disp_h = DisplayHeight(display, screen_num);
+	printf("W:%d H:%d\n",disp_w,disp_h);
 	
 	displayCalibPoints[0] = point(0.15*disp_w,  0.15*disp_h);
 	displayCalibPoints[1] = point(0.50*disp_w,  0.85*disp_h);
@@ -252,13 +253,16 @@ int main(int argc, char *argv[])
 		
 		if(!calibrationMode) //operation mode
 		{
-			wiringPiISR(irqPin, INT_EDGE_BOTH, &penInterrupt);		
-			
+			//wiringPiISR(irqPin, INT_EDGE_BOTH, &penInterrupt);		
+			pinMode(irqPin, INPUT);
 			printf("%s: Running...\n", argv[0]);
 			
 			while(1)
 			{
-				sleep(1);
+				if(!digitalRead(irqPin)){
+					penInterrupt();
+				}
+			usleep(10);
 			}
 		}else //calibration mode
 		{
@@ -288,16 +292,15 @@ int main(int argc, char *argv[])
 			XSetFillStyle(display, gc, FillSolid);
 			
 			Font font;
-			font = XLoadFont(display, "12x24");
+			font = XLoadFont(display, "fixed");
 			if(font == BadAlloc || font == BadName)
 			{
-				fprintf(stderr, "%s: Could not load font 12x24\n", argv[0]);
+				fprintf(stderr, "%s: Could not load font fixed\n", argv[0]);
 				closeApp();
 			}
 			XSetFont(display, gc, font);
 
 			XSync(display, False);
-
 			Pixmap bitmap;
 			unsigned int bitmap_w, bitmap_h;
 			int hotspot_x, hotspot_y;

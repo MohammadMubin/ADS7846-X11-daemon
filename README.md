@@ -4,6 +4,10 @@ Information:
 This is a linux user space daemon-driver for ADS7846 based touch screen. Daemon is intended for Allwiner based devices like Orange Pi. 
 Program includes calibration mode ( --cal ) with visual guidence based on X11. Tested for Orange Pi PC Plus running Armbian.
 
+This is modified to run without the need of interrupts since new boards(like Allwinner H6) dont support edge interrupts on pins.
+Uses polling to get input from the touchscreen.
+
+This was tested on a Orange Pi One Plus(Allwinner H6)
 Attributions:
 -------------
 
@@ -14,7 +18,7 @@ Tips:
 -----
 When using Waveshare LCDs like http://www.waveshare.com/wiki/10.1inch_HDMI_LCD bear in mind RPi pinout incompatibility of OrangePi. Reroute CS pin to PC3 (SPI0_CS) of your OPi - solder the pin 26 and 24 together or use extension cables for all SPI signals. 
 
-If you wan to use nonroot user add /etc/udev.d rule for spi and gpio.
+If you want to use nonroot user add /etc/udev.d rule for spi and gpio.
 
 How to:
 -------
@@ -22,7 +26,7 @@ How to:
 Install WereCatf version of WiringOP for handling pin/pen interrupt and X11 dependencies:
 ```
 $ apt-get install libx11-dev libxtst-dev
-$ git clone https://github.com/zhaolei/WiringOP.git -b h3 
+$ git clone https://github.com/orangepi-xunlong/wiringOP.git
 $ cd WiringOP
 $ chmod +x ./build
 $ ./build
