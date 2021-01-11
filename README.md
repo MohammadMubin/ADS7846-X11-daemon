@@ -8,6 +8,7 @@ This is modified to run without the need of interrupts since new boards(like All
 Uses polling to get input from the touchscreen.
 
 This was tested on a Orange Pi One Plus(Allwinner H6)
+
 Attributions:
 -------------
 
